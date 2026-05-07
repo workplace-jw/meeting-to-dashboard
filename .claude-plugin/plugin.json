@@ -1,0 +1,9 @@
+{
+  "name": "meeting-to-dashboard",
+  "description": "Six skills that turn meeting notes and Slack threads into a self-updating project dashboard. Includes process-meeting, process-slack-thread, weekly-rollup, find-stalled-projects, init-dashboard, and add-item. Use whenever the user wants to capture meeting outcomes, log Slack discussions into a dashboard, generate a weekly project review, find dormant projects, or maintain a single-file project dashboard.",
+  "author": {
+    "name": "Justin Westbrooks",
+    "email": "justin@workplace.io"
+  },
+  "version": "0.1.0"
+}
