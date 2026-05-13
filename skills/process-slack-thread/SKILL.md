@@ -84,6 +84,16 @@ Same format as `/process-meeting`, but lead with the project context (since chat
 - Bronson asked "should we tell Steve?" and no one responded in the thread. I added it as an open question for you to decide.
 ```
 
+### Step 7, refresh the visual dashboard
+
+After saving the updated `dashboard.md`, regenerate `dashboard.html` so the user's browser tab picks up the new state on its next 5-second refresh:
+
+```
+node ~/.claude/skills/render-dashboard/render.js dashboard.md
+```
+
+Do not open the file. The user already has the tab pinned from `/init-dashboard`. If the renderer fails or Node is missing, mention it once in your changelog and move on. The markdown is still the source of truth.
+
 ## Special handling for Slack
 
 - **Threaded replies vs. main channel:** If the user pastes a threaded reply chain, treat it as a single thread. If they paste main channel messages with replies, ask whether each thread should be processed separately.

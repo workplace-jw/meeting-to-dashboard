@@ -1,27 +1,30 @@
 # Meeting to Dashboard, A Claude Skill Pack
 
-Six Claude skills that turn your meeting notes (and Slack threads) into a self-updating project dashboard.
+Seven Claude skills that turn your meeting notes (and Slack threads) into a self-updating project dashboard you can actually see.
 
-You install the pack once. After every meeting you paste the notes and ask Claude to log it. Your dashboard stays current without a Friday update marathon.
+You install the pack once. After every meeting you paste the notes and ask Claude to log it. Your dashboard stays current and a browser tab on your desktop reflects every update within five seconds. No Friday update marathon.
 
 Built by [Justin Westbrooks](https://www.linkedin.com/in/justinwestbrooks). Free. Open source. MIT licensed.
 
 ## What's inside
 
-Six skills, each invokable on its own. Together they keep a single `dashboard.md` file accurate and useful.
+Seven skills, each invokable on its own. Together they keep a single `dashboard.md` file accurate and a `dashboard.html` view current.
 
 | Skill | What it does |
 |---|---|
-| `init-dashboard` | Sets up a fresh dashboard.md with the projects you already know about |
-| `process-meeting` | Paste meeting notes. Claude extracts projects, action items, decisions, and status changes, then updates your dashboard |
+| `init-dashboard` | Sets up a fresh dashboard.md, renders dashboard.html, opens it in your browser |
+| `process-meeting` | Paste meeting notes. Claude extracts projects, action items, decisions, and status changes, then updates your dashboard and re-renders the view |
 | `process-slack-thread` | Paste a Slack thread. Same extraction, same dashboard update |
 | `weekly-rollup` | Reads your dashboard and writes a one-page rollup of the week (wins, blockers, next focus) |
 | `find-stalled-projects` | Scans your dashboard for projects with no recent activity and asks why |
 | `add-item` | Manually add a project, action, or decision when you missed it elsewhere |
+| `render-dashboard` | Regenerates the visual dashboard.html. Runs automatically at the end of every mutating skill |
 
 ## What you get
 
-A single `dashboard.md` file that contains:
+Two files, both portable, both yours.
+
+`dashboard.md`, the source of truth, a single markdown file containing:
 
 - A list of every active project with last-touched date and one-line status
 - Open action items per project, with owner and due date when known
@@ -29,7 +32,14 @@ A single `dashboard.md` file that contains:
 - Recently completed items
 - A stalled list when projects go quiet
 
-The file is portable. Plain markdown. Keep it in Notion, Obsidian, Apple Notes, GitHub, anywhere.
+`dashboard.html`, the visual view, a single self-contained HTML file that:
+
+- Opens in your default browser
+- Renders projects as cards with overdue and due-this-week badges
+- Shows shipped-this-week and stalled counts at a glance
+- Self-refreshes every five seconds so you keep the tab pinned and watch the dashboard update as the week unfolds
+
+The markdown is portable. Plain text. Keep it in Notion, Obsidian, Apple Notes, GitHub, anywhere. The HTML is generated on demand and never edited by hand. The schema both files share lives in [SCHEMA.md](SCHEMA.md).
 
 ## Install
 
@@ -42,10 +52,10 @@ If you have Claude Code installed, paste this prompt into a new Claude Code sess
 ```
 Install the meeting-to-dashboard skill pack from https://github.com/workplace-jw/meeting-to-dashboard into my Claude Code skills directory.
 
-Clone the repo to a temp directory, copy the contents of the skills/ folder into ~/.claude/skills/, then list the six newly installed skills (init-dashboard, process-meeting, process-slack-thread, weekly-rollup, find-stalled-projects, add-item) to confirm the install worked.
+Clone the repo to a temp directory, copy the contents of the skills/ folder into ~/.claude/skills/, then list the seven newly installed skills (init-dashboard, process-meeting, process-slack-thread, weekly-rollup, find-stalled-projects, add-item, render-dashboard) to confirm the install worked.
 ```
 
-That's it. Each skill becomes a slash command. Run `/process-meeting` to use it.
+That's it. Each skill becomes a slash command. Run `/init-dashboard` to set up, then `/process-meeting` to start logging meetings.
 
 ### Path 2, Claude.ai (works for everyone with Pro or Team)
 
@@ -62,9 +72,11 @@ Upload the `skills/` folder via the Skills API endpoint. See [Anthropic's API do
 
 ## First time use
 
-Run `/init-dashboard` and answer a few quick questions. Claude creates a starter `dashboard.md` with the projects you already know are active.
+Run `/init-dashboard` and answer a few quick questions. Claude creates a starter `dashboard.md` with the projects you already know are active, renders `dashboard.html`, and opens it in your default browser. Pin that tab. It self-refreshes every five seconds, so every later skill update shows up there without you doing anything.
 
-If you skip init, no problem. The first time you run `/process-meeting`, the dashboard will get created automatically.
+If you skip init, no problem. The first time you run `/process-meeting`, the dashboard will get created automatically. You will need to open `dashboard.html` yourself the first time.
+
+You need Node 16+ on PATH for the visual dashboard to render. Most Claude Code users already have it. If `node` is missing, the markdown still works on its own.
 
 ## After every meeting
 

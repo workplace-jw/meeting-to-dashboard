@@ -31,9 +31,31 @@ Keep the questions plain and one at a time. Do not bombard with a form.
 
 Write `dashboard.md` using the exact template below. Replace placeholders with the user's answers. If the user skipped a field, leave it blank with a placeholder dash so they see where to fill it in later.
 
-### Step 4, confirm and explain next steps
+The file structure must match `SCHEMA.md` exactly. The renderer parses against that schema and silently drops anything that does not fit.
 
-Tell the user the file was created. Show them the file path. Tell them the next thing to do is run `/process-meeting` after their next meeting to start populating the dashboard automatically.
+### Step 4, render the visual dashboard and open it
+
+Run the renderer to produce `dashboard.html` next to `dashboard.md`:
+
+```
+node ~/.claude/skills/render-dashboard/render.js dashboard.md
+```
+
+Then open it in the user's browser. This is the only time the skill pack auto-opens the file. Every later render just refreshes the existing tab.
+
+```
+open dashboard.html        # macOS
+xdg-open dashboard.html    # Linux
+start dashboard.html       # Windows
+```
+
+### Step 5, confirm and explain next steps
+
+Tell the user:
+
+- The file was created at `<path>/dashboard.md`.
+- A visual dashboard opened in their browser at `dashboard.html`. The page updates itself in the background every few seconds, so they should keep the tab pinned.
+- The next thing to do is run `/process-meeting` after their next meeting to start populating the dashboard automatically.
 
 ## Dashboard template
 

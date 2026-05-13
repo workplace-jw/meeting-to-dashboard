@@ -80,11 +80,27 @@ If nothing is stalled, say so plainly: "Nothing stalled. Every active project in
 
 ### Step 5, update the dashboard
 
-After showing the user the list, also update the Stalled section of `dashboard.md` to reflect the current snapshot. Use the same project names, last-touched dates, and diagnoses.
+After showing the user the list, also update the Stalled section of `dashboard.md` to reflect the current snapshot.
+
+Each stalled project must be written as a single bullet matching this exact shape (the renderer parses against this format and will silently drop entries that do not match):
+
+```
+- **<Project Name>:** Last activity YYYY-MM-DD, N days ago. Likely cause: <one line>. Suggested next move: <one line>.
+```
 
 Update the dashboard's `last-updated` field at the top.
 
-### Step 6, ask one question
+### Step 6, refresh the visual dashboard
+
+After saving the updated Stalled section, regenerate `dashboard.html` so the user's browser tab picks up the new state on its next 5-second refresh:
+
+```
+node ~/.claude/skills/render-dashboard/render.js dashboard.md
+```
+
+Do not open the file. The user already has the tab pinned from `/init-dashboard`.
+
+### Step 7, ask one question
 
 After delivering the list, ask the user one focused question: "Want me to draft a chase email or follow-up message for any of these?" If they say yes for a specific project, draft it for them. Keep it short, polite, project-specific.
 
