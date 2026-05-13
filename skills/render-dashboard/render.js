@@ -17,7 +17,10 @@
 const fs = require('fs');
 const path = require('path');
 
-const REFRESH_SECONDS = 5;
+// Smart-poll cadence when fetch() works (no flash, swap body in place).
+const SMART_POLL_MS = 4000;
+// Reload cadence when fetch is blocked (file:// in Chrome/Safari).
+const FALLBACK_POLL_MS = 15000;
 
 function main() {
   const input = path.resolve(process.argv[2] || 'dashboard.md');
@@ -280,7 +283,6 @@ function renderHtml(data) {
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta http-equiv="refresh" content="${REFRESH_SECONDS}" />
 <title>${escapeHtml(title)}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -295,12 +297,63 @@ function renderHtml(data) {
   ${renderTwoCol(data)}
   ${renderNotes(data.notes)}
   <footer class="footer">
-    Auto-refreshes every ${REFRESH_SECONDS}s. Source of truth lives in <code>dashboard.md</code>.
+    Auto-updates within a few seconds when <code>dashboard.md</code> changes.
   </footer>
 </main>
+<script>${LIVE_RELOAD_SCRIPT}</script>
 </body>
 </html>`;
 }
+
+const LIVE_RELOAD_SCRIPT = `
+(function(){
+  // Try fetch-based smart swap first. No scroll jump, no flash, only repaints
+  // on actual content change. If fetch is blocked (Chrome/Safari on file://),
+  // fall back to a scroll-preserved reload at a slow cadence.
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  var savedY = sessionStorage.getItem('dashScrollY');
+  if (savedY !== null) {
+    window.scrollTo(0, parseInt(savedY, 10));
+    sessionStorage.removeItem('dashScrollY');
+  }
+  var lastBody = document.body.innerHTML;
+  var smartTimer = null;
+  var fallbackArmed = false;
+
+  function swapBody(html) {
+    var y = window.scrollY;
+    document.body.innerHTML = html;
+    window.scrollTo(0, y);
+    lastBody = html;
+  }
+
+  function startFallback() {
+    if (fallbackArmed) return;
+    fallbackArmed = true;
+    clearInterval(smartTimer);
+    setInterval(function(){
+      sessionStorage.setItem('dashScrollY', String(window.scrollY));
+      location.reload();
+    }, ${FALLBACK_POLL_MS});
+  }
+
+  async function tick() {
+    try {
+      var resp = await fetch(window.location.href, { cache: 'no-store' });
+      if (!resp.ok) throw new Error('http ' + resp.status);
+      var text = await resp.text();
+      var parser = new DOMParser();
+      var doc = parser.parseFromString(text, 'text/html');
+      var newBody = doc.body.innerHTML;
+      if (newBody !== lastBody) swapBody(newBody);
+    } catch (e) {
+      startFallback();
+    }
+  }
+
+  smartTimer = setInterval(tick, ${SMART_POLL_MS});
+})();
+`;
 
 function renderHeader(fm, stats) {
   const updated = fm['last-updated'] || today();

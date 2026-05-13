@@ -54,7 +54,7 @@ start dashboard.html       # Windows
 Tell the user:
 
 - The file was created at `<path>/dashboard.md`.
-- A visual dashboard opened in their browser at `dashboard.html`. The tab self-refreshes every 5 seconds, so they should keep it pinned.
+- A visual dashboard opened in their browser at `dashboard.html`. The page updates itself in the background every few seconds, so they should keep the tab pinned.
 - The next thing to do is run `/process-meeting` after their next meeting to start populating the dashboard automatically.
 
 ## Dashboard template

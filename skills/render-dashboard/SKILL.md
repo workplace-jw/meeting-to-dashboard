@@ -5,11 +5,11 @@ description: Regenerate the visual dashboard (dashboard.html) from dashboard.md.
 
 # Render Dashboard
 
-Turn the user's `dashboard.md` into a static `dashboard.html` file they can open in a browser. The HTML self-refreshes every 5 seconds, so an open tab tracks live edits.
+Turn the user's `dashboard.md` into a static `dashboard.html` file they can open in a browser. The page polls itself in the background and swaps in updates without scrolling or flashing when the browser allows `file://` fetches. In stricter browsers it falls back to a scroll-preserved reload at a slower cadence.
 
 ## What you're producing
 
-A `dashboard.html` file written next to `dashboard.md`. The user opens it once and keeps the tab pinned. Every mutation to `dashboard.md` shows up within 5 seconds.
+A `dashboard.html` file written next to `dashboard.md`. The user opens it once and keeps the tab pinned. Every mutation to `dashboard.md` shows up within a few seconds.
 
 ## Workflow
 
@@ -41,7 +41,7 @@ start dashboard.html       # Windows
 
 On macOS, `open` works without flags. If the user's platform is unclear, default to `open` and fall back to telling them the file path so they can open it manually.
 
-If `dashboard.html` already existed, do not open it again. The user already has the tab pinned. The meta refresh will pull the new version in within 5 seconds.
+If `dashboard.html` already existed, do not open it again. The user already has the tab pinned. The page's background poller will pick up the new version within a few seconds.
 
 ### Step 4, confirm briefly
 

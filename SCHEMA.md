@@ -99,4 +99,4 @@ After any mutation, run the renderer to update `dashboard.html`:
 node ~/.claude/skills/render-dashboard/render.js dashboard.md
 ```
 
-The renderer writes `dashboard.html` next to `dashboard.md`. The HTML self-refreshes every 5 seconds, so an open browser tab tracks live edits.
+The renderer writes `dashboard.html` next to `dashboard.md`. The page polls itself in the background and swaps in new content within a few seconds when the markdown changes. In browsers that block `file://` fetches (Chrome, Safari, Arc) it falls back to a scroll-preserved reload at a slower cadence.
