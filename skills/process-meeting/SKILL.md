@@ -86,6 +86,16 @@ Tell the user, in plain English, what you changed. Use this structure:
 
 The "wasn't sure about" section is critical. Always include it, even if it's empty (in which case say "Nothing ambiguous, all updates were clear").
 
+### Step 6, refresh the visual dashboard
+
+After saving the updated `dashboard.md`, regenerate `dashboard.html` so the user's browser tab picks up the new state on its next 5-second refresh:
+
+```
+node ~/.claude/skills/render-dashboard/render.js dashboard.md
+```
+
+Do not open the file. The user already has the tab pinned from `/init-dashboard`. If the renderer fails or Node is missing, mention it once in your changelog and move on. The markdown is still the source of truth.
+
 ## Output format constraints
 
 - **Always** show the user the changelog. Never just silently update the dashboard.
